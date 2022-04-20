@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Url;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class UrlController extends Controller
@@ -13,7 +15,14 @@ class UrlController extends Controller
      */
     public function index()
     {
-        return view('admin.urls.index');
+        $urls = DB::table('urls')
+                    ->orderBy('id', 'desc')
+                    ->get();
+
+        return view(
+            'admin.urls.index', 
+            ['urls' => $urls]
+        );
     }
 
     /**
@@ -34,7 +43,19 @@ class UrlController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'link' => 'required|url'
+        ]);
+
+        $url = new Url();
+        $url->link = $request->link;
+
+        $url->save();
+
+        $request->session()->flash('message', 'Url cadastrada com sucesso!');
+
+        return redirect()->route('url.view');
+
     }
 
     /**
@@ -45,30 +66,23 @@ class UrlController extends Controller
      */
     public function show($id)
     {
-        //
+        $url = Url::find($id);
+
+        return view(
+            'admin.urls.details', 
+            ['url' => $url]
+        );
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for deleting the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function delete()
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+        return view('admin.urls.delete');
     }
 
     /**
@@ -79,6 +93,8 @@ class UrlController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Url::find($id)->delete();
+
+        return redirect()->route('url.view');
     }
 }

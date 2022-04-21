@@ -19,7 +19,7 @@
                     <tr>
                         <th>Link</th>
                         <th>Status HTTP</th>
-                        <th>Data Cadastro</th>
+                        <th>Data da última consulta</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -27,10 +27,9 @@
                     <tr>
                         <td>{{ $url->link }}</td>
                         <td>{{ $url->status_code }}</td>
-                        <td>{{ date('d-m-Y H:i:s', strtotime($url->created_at)) }}</td>
+                        <td>{{ date('d-m-Y H:i:s', strtotime($url->updated_at)) }}</td>
                         <td>
                             <a href="{{ route('url.details', ['id' => $url->id]) }}">Detalhes</a>
-                            <a href="#">Excluir</a>
                         </td>
                     </tr>
                 @endforeach
@@ -39,5 +38,44 @@
             <p>Sem urls cadastradas.</p> 
         @endif
     </div>
+
+    <script>
+        $("body").on("click", "#updateList", function(e){
+            e.preventDefault();
+
+            if ( $('.table tbody').length == 0){                
+                alert('Não há registros para atualizar');
+                return;
+            }
+
+            UpdateUrlData();
+        });
+
+        function UpdateUrlData()
+        {
+            $.ajax({
+                url: "https://diegosouza.tec.br/xpto/admin/url/request", 
+                success: function(data){
+
+                    let jsonData = JSON.parse(data);
+
+                    $("tbody").empty();
+
+                    $(jsonData).each(function(i, e){
+                        
+                        let rowTable = "<tr>"; 
+                        rowTable += "<td>" + e.link + "</td>";
+                        rowTable += "<td>" + e.status_code + "</td>";
+                        rowTable += "<td>" + e.updated_at + "</td>";
+                        rowTable += "<td><a href='https://diegosouza.tec.br/xpto/admin/url/" + e.id + "'>Detalhes</td>";
+                        rowTable += "</tr>";
+                        
+                        $("tbody").append(rowTable);
+                    })
+                }
+            });
+        }
+
+    </script>
 
 @endsection

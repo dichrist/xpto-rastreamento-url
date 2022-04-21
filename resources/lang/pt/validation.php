@@ -1,6 +1,6 @@
 <?php 
 
 return [
-    'required' => 'O :attribute é obrigatório.',
-    'url' => 'O :attribute deve ser uma URL válida.',
+    'required' => 'O campo :attribute é obrigatório.',
+    'url' => 'O campo :attribute deve ser uma URL válida.',
 ];

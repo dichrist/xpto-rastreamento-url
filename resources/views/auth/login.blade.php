@@ -7,6 +7,10 @@
             <div class="card">
                 <div class="card-header">{{ __('Login') }}</div>
 
+                <small class="text-center">Dados para teste</small>
+                <small class="text-center">Email: teste@email.com</small>
+                <small class="text-center">Senha: 12345678</small>
+
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
